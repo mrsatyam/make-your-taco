@@ -8,8 +8,8 @@ import org.springframework.data.repository.CrudRepository;
 import com.taco.model.Order;
 
 public interface OrderRepository extends CrudRepository<Order, Long>{
-	List<Order> findByDeliveryZip(String deliveryZip);
-	@Query("Order o where o.deliveryCity='Seattle'")
+	List<Order> findByZip(String zip);
+	@Query("from Order o where o.city='Seattle'")
 	List<Order> readOrdersDeliveredInSeattle();
 
 }
