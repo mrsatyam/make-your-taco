@@ -1,15 +1,11 @@
 package com.taco.repository;
 
-import org.springframework.stereotype.Service;
+import org.springframework.data.repository.CrudRepository;
 
 import com.taco.model.Ingredient;
 
-@Service
-public interface IngredientRepository {
+
+public interface IngredientRepository extends CrudRepository<Ingredient, String> {
 	
-	Iterable<Ingredient> findAll();
-
-	Ingredient findOne(String id);
-
-	Ingredient save(Ingredient ingredient);
+	
 }

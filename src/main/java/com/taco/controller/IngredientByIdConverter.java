@@ -1,5 +1,7 @@
 package com.taco.controller;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
@@ -20,6 +22,6 @@ public IngredientByIdConverter(IngredientRepository ingredientRepo) {
 
 @Override
 public Ingredient convert(String id) {
-    return ingredientRepo.findOne(id);
+    return ingredientRepo.findById(id).get();
 }
 }
