@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 @Entity
 @NoArgsConstructor(access=AccessLevel.PRIVATE, force=true)
 @RequiredArgsConstructor
-public class User implements UserDetails {
+public class Users implements UserDetails {
 	 @Id
 	 @GeneratedValue(strategy = GenerationType.AUTO)
 	 private Long id;
@@ -32,7 +32,7 @@ public class User implements UserDetails {
 	 private final String city;
 	 private final String state;
 	 private final String zip;
-	 private final String phoneNumber;
+	 private final String phonenumber;
 
 	
 	private static final long serialVersionUID = 1L;

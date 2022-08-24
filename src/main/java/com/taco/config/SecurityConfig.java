@@ -4,7 +4,9 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,6 +14,7 @@ import org.springframework.security.crypto.password.StandardPasswordEncoder;
 
 import com.taco.service.UserRepositoryUserDetailsService;
 
+@Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	DataSource dataSource;
@@ -52,5 +55,33 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     PasswordEncoder encoder() {
         return new StandardPasswordEncoder("53cr3t");
+    }
+    
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+    	http
+    	.authorizeRequests()
+    	.antMatchers("/design", "/orders")
+    	.hasAuthority("ROLE_USER")
+    	.antMatchers("/", "/**")
+    	.access("permitAll")
+    	.and()
+    	.formLogin()
+    	.loginPage("/login")
+    	.and()
+    	.logout()
+    	.logoutSuccessUrl("/"); //.loginProcessingUrl("/authenticate").usernameParameter("user")
+    	//.passwordParameter("pwd").defaultSuccessUrl("/design", true)
+
+    	 
+    	
+		/*
+		 * http .authorizeRequests() .antMatchers("/design", "/orders")
+		 * .access("hasRole('ROLE_USER') && " +
+		 * "T(java.util.Calendar).getInstance().get("+
+		 * "T(java.util.Calendar).DAY_OF_WEEK) == " + "T(java.util.Calendar).TUESDAY")
+		 * .antMatchers(“/”, "/**").access("permitAll") ;
+		 */
+
     }
 }
