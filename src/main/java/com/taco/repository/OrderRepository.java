@@ -10,8 +10,8 @@ import com.taco.model.Order;
 import com.taco.model.Users;
 
 public interface OrderRepository extends CrudRepository<Order, Long>{
-	List<Order> findByZip(String zip);
-	@Query("from Order o where o.city='Seattle'")
+	List<Order> findByDeliveryZip(String deliveryZip);
+	@Query("from Order o where o.deliveryCity='Seattle'")
 	List<Order> readOrdersDeliveredInSeattle();
 	List<Order> findByUserOrderByPlacedAtDesc(Users user, Pageable pageable);
 }

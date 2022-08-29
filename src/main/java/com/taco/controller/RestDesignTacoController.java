@@ -1,5 +1,6 @@
 package com.taco.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,10 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -26,6 +31,8 @@ import com.taco.model.Order;
 import com.taco.model.Taco;
 import com.taco.repository.OrderRepository;
 import com.taco.repository.TacoRepository;
+import com.taco.resource.TacoEntityModel;
+import com.taco.resource.TacoEntityModelAssembler;
 
 @RestController
 @RequestMapping(path = "/rest/design", produces = "application/json") // produces tells that this controller will only
@@ -51,9 +58,14 @@ public class RestDesignTacoController {
 	private OrderRepository orderRepo;
 
 	@GetMapping("/recent")
-	public Iterable<Taco> recentTacos() {
+	public CollectionModel<TacoEntityModel> recentTacos() {
 		PageRequest page = PageRequest.of(0, 12, Sort.by("createdAt").descending());
-		return tacoRepo.findAll(page).getContent();
+		List<Taco> tacos = tacoRepo.findAll(page).getContent();
+		CollectionModel<TacoEntityModel> recentResources = new TacoEntityModelAssembler().toCollectionModel(tacos);
+		recentResources.add(WebMvcLinkBuilder
+				.linkTo(WebMvcLinkBuilder.methodOn(RestDesignTacoController.class).recentTacos())
+				.withRel("recents"));
+		return recentResources;
 
 	}
 
