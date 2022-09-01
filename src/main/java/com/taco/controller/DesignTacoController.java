@@ -1,11 +1,14 @@
 package com.taco.controller;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.client.Traverson;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.client.RestTemplate;
 
 import com.taco.model.Ingredient;
 import com.taco.model.Ingredient.Type;
@@ -93,4 +97,21 @@ public class DesignTacoController {
 	private List<Ingredient> filterByType(List<Ingredient> ingredients, Type type) {
 		return ingredients.stream().filter(i -> i.getType().equals(type)).toList();
 	}
+	
+	
+	public Ingredient addIngredient(Ingredient ingredient) {
+		Traverson traverson = new Traverson(
+				 URI.create("http://localhost:8080/api"), MediaTypes.HAL_JSON);
+		RestTemplate rest = new RestTemplate();
+		 String ingredientsUrl = traverson
+		 .follow("ingredients")
+		 .asLink()
+		 .getHref();
+		
+		return rest.postForObject(ingredientsUrl,
+		 ingredient,
+		 Ingredient.class);
+		}
+	
+	
 }
