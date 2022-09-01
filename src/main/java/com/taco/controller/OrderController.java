@@ -44,6 +44,7 @@ public class OrderController {
 
 	@GetMapping(value = "/current")
 	public String orderForm(Model model) {
+		model.addAttribute("order", new Order());
 		return "orderForm";
 	}
 
@@ -99,7 +100,8 @@ public class OrderController {
 
 	@GetMapping
 	public String ordersForUser(@AuthenticationPrincipal Users user, Model model) {
-		Pageable pageable = PageRequest.of(0, orderProps.getPageSize());// will fetch only the number of rows specified by pageSize()
+		Pageable pageable = PageRequest.of(0, orderProps.getPageSize());// will fetch only the number of rows specified
+																		// by pageSize()
 		model.addAttribute("orders", orderRepo.findByUserOrderByPlacedAtDesc(user, pageable));
 		return "orderList";
 	}
