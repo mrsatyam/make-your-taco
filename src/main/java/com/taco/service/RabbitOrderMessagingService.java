@@ -22,7 +22,13 @@ public class RabbitOrderMessagingService implements OrderMessagingService {
 		 * props); rabbit.send("tacocloud.order", message);
 		 */
 		// replace above by
-		rabbit.convertAndSend("tacocloud.order", order);
+		rabbit.convertAndSend("tacocloud.order", order, this::setMessageProperties);
+	}
+
+	private Message setMessageProperties(Message message) {
+		MessageProperties props = message.getMessageProperties();
+		props.setHeader("X_ORDER_SOURCE", "WEB");
+		return message;
 	}
 
 }
