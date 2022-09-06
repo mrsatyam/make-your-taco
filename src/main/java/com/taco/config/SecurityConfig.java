@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,7 +15,7 @@ import org.springframework.security.crypto.password.StandardPasswordEncoder;
 
 import com.taco.service.UserRepositoryUserDetailsService;
 
-@Configuration
+@EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	DataSource dataSource;
@@ -22,12 +23,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	UserRepositoryUserDetailsService userDetailsService;
 
+	//configure authentication
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		/*
 		 * //This is in memory authentication where the users are provided in the code
-		 * and to add new user codebase has to be changed. auth
-		 * .inMemoryAuthentication() .withUser("buzz") .password("infinity")
+		 * and to add new user codebase has to be changed. 
+		 * 
+		 * auth.inMemoryAuthentication() .withUser("buzz") .password("infinity")
 		 * .authorities("ROLE_USER") .and() .withUser("woody") .password("bullseye")
 		 * .authorities("ROLE_USER");
 		 */
@@ -43,7 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		 */
 
 		/*
-		 * auth // Authentication with relational DB .jdbcAuthentication()
+		 *  // Authentication with relational DB auth.jdbcAuthentication()
 		 * .dataSource(dataSource).authoritiesByUsernameQuery(null).usersByUsernameQuery
 		 * (null).passwordEncoder(null);
 		 */
@@ -52,11 +55,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		auth.userDetailsService(userDetailsService).passwordEncoder(encoder());
 	}
 
+	//provide a password encoder to encode passwords throughout app
     @Bean
     PasswordEncoder encoder() {
         return new StandardPasswordEncoder("53cr3t");
     }
     
+    //configure authorization
     @Override
     protected void configure(HttpSecurity http) throws Exception {
     	http
