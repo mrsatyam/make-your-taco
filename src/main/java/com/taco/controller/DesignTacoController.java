@@ -7,6 +7,9 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.client.Traverson;
 import org.springframework.stereotype.Controller;
@@ -30,7 +33,7 @@ import com.taco.repository.TacoRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
-@RestController
+@Controller
 @CrossOrigin(origins = "*")
 @Slf4j
 @RequestMapping("/design")
@@ -88,6 +91,8 @@ public class DesignTacoController {
 			return DESIGN;
 		}
 		Taco saved = tacoRepo.save(taco);
+		Pageable s = PageRequest.of(1, 3, Sort.unsorted());
+		tacoRepo.findAll(s);
 		order.addDesign(saved);
 		log.info("Processing design: " + taco);
 		return "redirect:/orders/current";

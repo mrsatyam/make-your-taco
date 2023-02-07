@@ -4,12 +4,14 @@ import java.security.Principal;
 
 import javax.validation.Valid;
 
+import com.taco.service.KafkaOrderMessagingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.core.AuthenticatedPrincipal;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -45,6 +47,8 @@ public class OrderController {
 	@Autowired
 	private UserRepository userRepo;
 
+	@Autowired KafkaTemplate<String, Order> messagingService;
+
 	@GetMapping(value = "/current")
 	public String orderForm(Model model) {
 		model.addAttribute("order", new Order());
@@ -59,6 +63,9 @@ public class OrderController {
 		}
 		order.setUser(user);
 		orderRepo.save(order);
+		log.info("Sending kafka message");
+		messagingService.send("tacocloud.orders.topic", order);
+		log.info("Successfully sent kafka message");
 		sessionStatus.setComplete();
 		return "redirect:/";
 	}

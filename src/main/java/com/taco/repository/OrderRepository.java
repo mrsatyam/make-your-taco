@@ -15,3 +15,4 @@ public interface OrderRepository extends CrudRepository<Order, Long>{
 	List<Order> readOrdersDeliveredInSeattle();
 	List<Order> findByUserOrderByPlacedAtDesc(Users user, Pageable pageable);
 }
+

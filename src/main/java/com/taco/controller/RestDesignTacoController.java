@@ -1,5 +1,6 @@
 package com.taco.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +15,8 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -122,8 +125,11 @@ public class RestDesignTacoController {
 	}
 
 	@PutMapping("/{orderId}")
-	public Order putOrder(@RequestBody Order order) {
-		return orderRepo.save(order);
+	public ResponseEntity<Order> putOrder(@RequestBody Order order) {
+		MultiValueMap<String , String> headers = new LinkedMultiValueMap<>();
+		headers.add("name", "saty");
+		ResponseEntity<Order> res = new ResponseEntity<>(orderRepo.save(order), headers, HttpStatus.FOUND);
+		return res;
 	}
 
 	@DeleteMapping("/{orderId}")
